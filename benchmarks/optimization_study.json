@@ -1,0 +1,290 @@
+{
+  "blocks_start": 0,
+  "counts": [
+    2,
+    4
+  ],
+  "layout": {
+    "text_len": 31,
+    "bucket": 64,
+    "target": 4096,
+    "timestep": 0.9919465184211731
+  },
+  "variants": {
+    "base": {
+      "why": "today's recipe: iOS17, fp16, stack-form RoPE",
+      "target": "iOS17",
+      "rope": "stack",
+      "compress": null,
+      "w8a8": false,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 23.123237291933037,
+          "size_gb": 0.873024617,
+          "psnr": 99.20464482840373,
+          "median_ms": 329.84693703474477,
+          "p10_ms": 326.683203689754,
+          "p90_ms": 334.44132511503994,
+          "load_s": 1.7808366250246763
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 48.06665545795113,
+          "size_gb": 1.745488806,
+          "psnr": 97.4749564333053,
+          "median_ms": 649.3867914541624,
+          "p10_ms": 645.6087125232443,
+          "p90_ms": 656.1318998574279,
+          "load_s": 3.4226405419176444
+        }
+      },
+      "slope_ms_per_block": 159.76992720970875,
+      "slope_intercept_ms": 10.30708261532738,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 162.3466978635406,
+      "projected_32block_gb": 13.963910448,
+      "psnr": 97.4749564333053,
+      "speedup_vs_base": 1.0,
+      "projected_step_s": 5.044530957937241
+    },
+    "rope": {
+      "why": "+ the rotation's sign folded into the sin table",
+      "target": "iOS17",
+      "rope": "fold",
+      "compress": null,
+      "w8a8": false,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 22.558118792017922,
+          "size_gb": 0.873018995,
+          "psnr": 99.20464482840373,
+          "median_ms": 320.37312496686354,
+          "p10_ms": 317.5379954162054,
+          "p90_ms": 322.95534996083006,
+          "load_s": 1.7136984579265118
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 46.28807420900557,
+          "size_gb": 1.74547752,
+          "psnr": 97.4749564333053,
+          "median_ms": 624.3705000379123,
+          "p10_ms": 615.0398288154975,
+          "p90_ms": 634.7489958512597,
+          "load_s": 3.6091300839325413
+        }
+      },
+      "slope_ms_per_block": 151.99868753552425,
+      "slope_intercept_ms": 16.375749895815073,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 156.09262500947807,
+      "projected_32block_gb": 13.96382016,
+      "psnr": 97.4749564333053,
+      "speedup_vs_base": 1.040066421162965,
+      "projected_step_s": 4.8502007711167385
+    },
+    "sdpa18": {
+      "why": "+ iOS18, where SDPA stays one op instead of matmul/softmax",
+      "target": "iOS18",
+      "rope": "fold",
+      "compress": null,
+      "w8a8": false,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 22.78172583389096,
+          "size_gb": 0.873016287,
+          "psnr": 99.19019335197684,
+          "median_ms": 313.9389585121535,
+          "p10_ms": 310.2232875768095,
+          "p90_ms": 318.2002832996659,
+          "load_s": 1.6961884580086917
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 46.47562350006774,
+          "size_gb": 1.745472068,
+          "psnr": 97.49439251123773,
+          "median_ms": 603.2891874783672,
+          "p10_ms": 600.5507035879418,
+          "p90_ms": 608.1716250628233,
+          "load_s": 3.453413165989332
+        }
+      },
+      "slope_ms_per_block": 144.67511448310677,
+      "slope_intercept_ms": 24.588729545940083,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 150.8222968695918,
+      "projected_32block_gb": 13.963776544,
+      "psnr": 97.49439251123773,
+      "speedup_vs_base": 1.0764104594157808,
+      "projected_step_s": 4.686438071844032
+    },
+    "ne": {
+      "why": "iOS18 on the Neural Engine instead of the GPU",
+      "target": "iOS18",
+      "rope": "fold",
+      "compress": null,
+      "w8a8": false,
+      "units": "cpu_and_ne",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 27.241253499989398,
+          "size_gb": 0.873016287,
+          "psnr": 81.89269577535649,
+          "median_ms": 2201.538916968275,
+          "p10_ms": 2199.3188168969937,
+          "p90_ms": 2205.864237388596,
+          "load_s": 8.520615166053176
+        }
+      },
+      "blocks_measured": [
+        2
+      ],
+      "ms_per_block": 1100.7694584841374,
+      "projected_32block_gb": 13.968260592,
+      "psnr": 81.89269577535649,
+      "speedup_vs_base": 0.14748474043521084,
+      "projected_step_s": 34.20374842204962
+    },
+    "w8": {
+      "why": "+ int8 per-channel weights (half the bytes on disk)",
+      "target": "iOS18",
+      "rope": "fold",
+      "compress": "quant_int8",
+      "w8a8": false,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 22.44380379107315,
+          "size_gb": 0.43673771,
+          "psnr": 90.3399030081127,
+          "median_ms": 312.7226459910162,
+          "p10_ms": 311.6359418956563,
+          "p90_ms": 315.2239045710303,
+          "load_s": 1.5981493749422953
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 48.28697970905341,
+          "size_gb": 0.873168913,
+          "psnr": 87.85137608073944,
+          "median_ms": 616.0596454865299,
+          "p10_ms": 610.2867126464844,
+          "p90_ms": 623.2334293425083,
+          "load_s": 2.4886570000089705
+        }
+      },
+      "slope_ms_per_block": 151.66849974775678,
+      "slope_intercept_ms": 9.385646495502629,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 154.01491137163248,
+      "projected_32block_gb": 6.985351304,
+      "psnr": 87.85137608073944,
+      "speedup_vs_base": 1.0540972716064085,
+      "projected_step_s": 4.785640845317383
+    },
+    "w4": {
+      "why": "+ int4 per-block weights (a quarter of the bytes)",
+      "target": "iOS18",
+      "rope": "fold",
+      "compress": "quant_int4",
+      "w8a8": false,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 23.50462412496563,
+          "size_gb": 0.245593777,
+          "psnr": 69.33450463140967,
+          "median_ms": 332.72920799208805,
+          "p10_ms": 330.6694124825299,
+          "p90_ms": 334.7993910079822,
+          "load_s": 1.0828454999718815
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 47.590203624917194,
+          "size_gb": 0.491003933,
+          "psnr": 67.85052305810021,
+          "median_ms": 644.4054790190421,
+          "p10_ms": 638.3163204300217,
+          "p90_ms": 650.4013456054963,
+          "load_s": 1.4397940000053495
+        }
+      },
+      "slope_ms_per_block": 155.83813551347694,
+      "slope_intercept_ms": 21.052936965134304,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 161.10136975476053,
+      "projected_32block_gb": 3.928031464,
+      "psnr": 67.85052305810021,
+      "speedup_vs_base": 1.0077300901331616,
+      "projected_step_s": 5.005835399110347
+    },
+    "w8a8": {
+      "why": "+ int8 *activations* too \u2014 the GPU's int8 matmul is ~2x fp16",
+      "target": "iOS18",
+      "rope": "fold",
+      "compress": null,
+      "w8a8": true,
+      "units": "cpu_and_gpu",
+      "measurements": {
+        "2": {
+          "blocks": 2,
+          "convert_s": 64.51875745900907,
+          "size_gb": 0.436768861,
+          "psnr": 45.52741011768132,
+          "median_ms": 199.95747902430594,
+          "p10_ms": 199.0328410989605,
+          "p90_ms": 202.50037494115531,
+          "load_s": 0.72288212494459
+        },
+        "4": {
+          "blocks": 4,
+          "convert_s": 181.65689583402127,
+          "size_gb": 0.873231215,
+          "psnr": 41.57816681557138,
+          "median_ms": 387.4263754696585,
+          "p10_ms": 385.1002248702571,
+          "p90_ms": 388.90729977283627,
+          "load_s": 4.384687832905911
+        }
+      },
+      "slope_ms_per_block": 93.73444822267624,
+      "slope_intercept_ms": 12.488582578953467,
+      "blocks_measured": [
+        2,
+        4
+      ],
+      "ms_per_block": 96.85659386741463,
+      "projected_32block_gb": 6.98584972,
+      "psnr": 41.57816681557138,
+      "speedup_vs_base": 1.6761553486567398,
+      "projected_step_s": 3.009584381292519
+    }
+  },
+  "measured_step_ms": 5044.530957937241
+}

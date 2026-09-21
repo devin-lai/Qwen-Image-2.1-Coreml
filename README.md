@@ -1,1 +1,220 @@
-# Qwen-Image-2.1-Coreml
+# Core ML conversion of Qwen-Image-2.1
+
+Run [Qwen-Image-2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) text-to-image
+generation on Apple silicon. This repository contains the Python inference code,
+sample prompts, reference outputs, and benchmark records. The converted models
+are hosted on [Hugging Face](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml).
+
+The release uses fp16 Core ML packages for the denoiser and VAE decoder. It
+supports 1024 × 1024 images and prompts of up to 64 encoded tokens. The text
+encoder is separate; four precomputed prompts are included so you can try the
+models without downloading the original checkpoint.
+
+Conversion and inference code by Devin Lai. Built with Qwen.
+
+![A neon shop sign reading QWEN IMAGE 2.1 on a rainy street](assets/gallery/neon_sign.jpg)
+
+*A neon shop sign that reads "QWEN IMAGE 2.1", rainy night, reflections on wet
+pavement. 1024 × 1024, 40 steps, seed 42.*
+
+## Quickstart
+
+You need an Apple silicon Mac running macOS 15 or newer and Python 3.11–3.13.
+The packages take 14.74 GB on disk; allow additional space for dependencies and
+Core ML compilation. Testing was done on an M5 MacBook Pro with 32 GB of unified
+memory. Memory requirements on smaller machines have not been established.
+
+```bash
+git clone https://github.com/devin-lai/Qwen-Image-2.1-Coreml.git
+cd Qwen-Image-2.1-Coreml
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+python download_models.py
+python generate.py --out neon.png
+```
+
+The first command downloads the six packages into `models/`. Generation uses the
+included neon-sign prompt. The first run also compiles models and computes the
+prompt's KV cache, so it takes longer than subsequent runs.
+
+To use the nested Hugging Face checkout instead of downloading another copy:
+
+```bash
+python generate.py --models ./Qwen-Image-2.1-Coreml --out neon.png
+```
+
+## Your own prompts
+
+Install the optional text-encoding dependencies, then encode a prompt once:
+
+```bash
+python -m pip install '.[torch-reference]'
+python encode_prompt.py "a lighthouse in a storm, long exposure" --name lighthouse
+python generate.py --prompt-embeds assets/prompts/lighthouse.npz --out lighthouse.png
+```
+
+`encode_prompt.py` loads the upstream Qwen3-VL text encoder through Diffusers.
+This requires a separate download and more memory than using the included
+embeddings. The optional dependencies pin the Diffusers revision used for this
+release. You can provide a local checkpoint with `--checkpoint` or the
+`QWEN_IMAGE_21_CHECKPOINT` environment variable.
+
+The generation script saves prompt KV tensors under `.cache/` and reuses them
+when the prompt, layout, model files, and compute settings match. Use
+`--prefix-cache none` to recompute them. Each cache takes about 67 MB.
+
+## Examples
+
+These samples use the same settings: 1024 × 1024, 40 steps, seed 42, and
+`cpu_and_gpu`. The corresponding embeddings are in `assets/prompts/`.
+
+| Sample | Prompt |
+| --- | --- |
+| ![Red fox in snow](assets/gallery/fox.jpg) | A red fox standing in fresh snow at dawn, soft morning light |
+| ![Wooden tea-house sign](assets/gallery/tea_house.jpg) | 一块木质招牌上写着「清风茶舍」，暖黄灯笼，雨后的青石板街 |
+| ![Botanical illustration](assets/gallery/botanical.jpg) | A hand-drawn botanical illustration of a monstera leaf, ink on aged paper |
+
+```bash
+python generate.py --prompt-embeds assets/prompts/tea_house.npz --out tea.png
+```
+
+## Python API
+
+```python
+from qwen_image_coreml import generate, load_prompt_embeds
+
+embeds, prompt = load_prompt_embeds("assets/prompts/neon_sign.npz")
+result = generate(embeds, models_dir="models", steps=40, seed=42)
+result.image.save("out.png")
+print(result.timings)
+```
+
+Inference uses `coremltools`, `torch`, `numpy`, and `Pillow`. Diffusers and
+Transformers are only needed for encoding new prompts and checking the ported
+math against the reference implementation.
+
+## Packages
+
+| Package | Purpose | Size |
+| --- | --- | ---: |
+| `QwenImage21_Embed.mlpackage` | Timestep embedding and modulation | 0.17 GB |
+| `QwenImage21_Blocks_0of4.mlpackage` | Transformer blocks 0–7 | 3.56 GB |
+| `QwenImage21_Blocks_1of4.mlpackage` | Transformer blocks 8–15 | 3.49 GB |
+| `QwenImage21_Blocks_2of4.mlpackage` | Transformer blocks 16–23 | 3.49 GB |
+| `QwenImage21_Blocks_3of4.mlpackage` | Transformer blocks 24–31 | 3.52 GB |
+| `QwenImage21_VAEDecoder_1024x1024.mlpackage` | Latents to RGBA pixels | 0.51 GB |
+| **Total** | | **14.74 GB** |
+
+Sizes are decimal GB. Each transformer package has two functions sharing one
+copy of its weights:
+
+- `prefix` processes the prompt once and returns its layer KV caches.
+- `decode` processes the image tokens at each denoising step using those caches.
+
+The denoiser uses the iOS 18 / macOS 15 target, including fused attention and
+multifunction packages. The complete pipeline requires macOS 15 even though the
+VAE package itself has an older specification version. iOS execution has not
+been tested in this repository.
+
+The host builds the rotary tables, attention masks, and timestep sinusoid, then
+runs a flow-matching Euler sampler around the Core ML denoiser. The VAE takes
+`(1, 64, 64, 64)` latents and returns `(1, 4, 1024, 1024)` RGBA values.
+See [the package manifest](benchmarks/package_manifest.json) for every input and
+output name, shape, and dtype.
+
+## Measurements
+
+The recorded environment was an M5 MacBook Pro, 32 GB, macOS 27.0,
+coremltools 9.0, and PyTorch 2.11. The two saved Core ML sessions used the neon
+prompt, seed 42, and 40 steps:
+
+| Stage | Session 1 | Session 2 |
+| --- | ---: | ---: |
+| Prompt prefix | 27.90 s | 33.34 s |
+| 40 denoising steps | 221.21 s | 249.67 s |
+| VAE stage, including loading | 3.36 s | 3.57 s |
+| Sum of these stages | 252.47 s | 286.58 s |
+
+These stage sums exclude text encoding and denoiser loading. They are not total
+command wall time. The raw records are
+[session 1](benchmarks/pipeline_timing_session1.json) and
+[session 2](benchmarks/pipeline_timing_session2.json). Runtime varies between
+sessions; compare builds under the same conditions.
+
+For one denoising step at `t = 1.0`, the recorded noise prediction PSNR against
+an fp32 CPU reference was:
+
+| Execution | PSNR |
+| --- | ---: |
+| PyTorch bf16 | 55.80 dB |
+| PyTorch fp16 | 70.94 dB |
+| Core ML fp16 | 71.55 dB |
+
+Sources: [PyTorch precision](benchmarks/precision_step_torch.json) and
+[Core ML precision](benchmarks/precision_step_coreml.json). These are numerical
+checks on one input, not a general image-quality score. Small differences can
+accumulate over a full sampling run; the Core ML and bf16 PyTorch outputs are
+not bit-identical.
+
+The [optimization study](benchmarks/optimization_study.txt) records tests of
+folded RoPE, fused attention, weight compression, and Neural Engine execution.
+Only the fp16 packages are included in this release. The study's full-step
+estimates for other variants are projections from smaller graphs.
+
+## Verification and benchmarks
+
+```bash
+python verify.py --steps 4
+python verify.py --steps 40
+python benchmark.py --hold --label local
+```
+
+`verify.py` recomputes the prefix and runs all six packages. It compares the
+resulting latents with the shipped reference and reports the maximum absolute
+difference and PSNR. The reference matched exactly in the recorded environment;
+bitwise agreement is not guaranteed across hardware, OS versions, or compute
+units. The VAE runs during this check, but its pixels are not compared with a
+reference.
+
+`benchmark.py --hold` measures decode latency with all four chunks resident,
+as they are during generation. `--units cpu_and_gpu,cpu_and_ne` compares compute
+settings. The default is `cpu_and_gpu`, which was faster in the recorded study.
+
+To run the host-side tests:
+
+```bash
+python -m pip install -e '.[test,torch-reference]'
+python -m pytest tests/ -v
+```
+
+The tests cover the rotary tables, timestep projection, sampler, cache reuse,
+and download handling. They do not need model weights. CI also checks lint and
+package imports; it does not run model inference.
+
+## Scope and limitations
+
+- The supplied packages have fixed shapes: batch size 1, 1024 × 1024, and at most
+  64 encoded prompt tokens. Other shapes require another conversion.
+- This release supports text-to-image generation. Image editing and
+  classifier-free guidance are not implemented in the inference loop.
+- The text encoder is not converted to Core ML.
+- The conversion scripts are maintained separately in
+  [torch2coreml](https://github.com/devin-lai/torch2coreml). The benchmark records
+  are included here; the full conversion study and precision harness are not.
+
+## License and attribution
+
+The inference code is licensed under [Apache-2.0](LICENSE). The rotary table,
+timestep projection, and sampler include code adapted from Diffusers; see
+[NOTICE](NOTICE) for attribution.
+
+The converted weights remain subject to the
+[Qwen Research License Agreement](LICENSE-QWEN). That license permits
+non-commercial research and evaluation; commercial use requires a separate
+license from the upstream licensor. The Apache license for this repository's
+code does not relicense the weights.
+
+See [PUBLISHING.md](PUBLISHING.md) for notes on maintaining the GitHub and
+Hugging Face repositories.

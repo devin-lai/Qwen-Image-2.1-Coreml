@@ -1,0 +1,30 @@
+{
+  "coreml_latents_v2.npz": {
+    "name": "  coreml_latents_v2.npz",
+    "shape": [
+      1,
+      64,
+      64,
+      64
+    ],
+    "psnr": 64.87266963306723,
+    "max_abs": 0.1104699969291687,
+    "mean_abs": 0.0015351241454482079,
+    "max_rel": 148.19541931152344
+  },
+  "coreml_t2i_v2.png": {
+    "name": "coreml_t2i.png vs coreml_t2i_v2.png",
+    "shape": [
+      1024,
+      1024,
+      4
+    ],
+    "psnr": 54.80692645698217,
+    "max_abs": 0.3333333432674408,
+    "mean_abs": 0.00035806919913738966,
+    "max_rel": 27450.98046875,
+    "pct_over_1_level": 1.334381103515625,
+    "pct_over_4_levels": 0.13020038604736328,
+    "max_levels": 85.0
+  }
+}

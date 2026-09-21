@@ -1,0 +1,14 @@
+# opt_study.py, M5 MacBook Pro 32 GB, macOS 27.0, coremltools 9.0. Blocks [0,4) of 32,
+# 1024x1024 (4096 target tokens), prompt 31 -> bucket 64, real step-0 inputs.
+# psnr is the 4-block output against the same blocks in fp32 torch.
+variant     ms/block  x base     step     GB     psnr  why
+base           162.3    1.00     5.04   14.0    97.47  today's recipe: iOS17, fp16, stack-form RoPE
+rope           156.1    1.04     4.85   14.0    97.47  + the rotation's sign folded into the sin table
+sdpa18         150.8    1.08     4.69   14.0    97.49  + iOS18, where SDPA stays one op instead of matmul/softmax
+ne            1100.8    0.15    34.20   14.0    81.89  iOS18 on the Neural Engine instead of the GPU
+w8             154.0    1.05     4.79    7.0    87.85  + int8 per-channel weights (half the bytes on disk)
+w4             161.1    1.01     5.01    3.9    67.85  + int4 per-block weights (a quarter of the bytes)
+w8a8            96.9    1.68     3.01    7.0    41.58  + int8 *activations* too — the GPU's int8 matmul is ~2x fp16
+
+'step' scales the measured 32-block step (5.04 s, logs/bench.json) by this variant's ratio.
+wrote logs/opt_study.json   peak RSS 18.7 GB

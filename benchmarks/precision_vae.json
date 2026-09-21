@@ -1,0 +1,37 @@
+{
+  "rewrites (fp32)": {
+    "name": "rewrites, fp32",
+    "shape": [
+      1,
+      4,
+      1024,
+      1024
+    ],
+    "psnr": Infinity,
+    "max_abs": 0.0,
+    "mean_abs": 0.0,
+    "max_rel": 0.0
+  },
+  "coreml fp16": {
+    "name": "coreml fp16",
+    "shape": [
+      1,
+      4,
+      1024,
+      1024
+    ],
+    "psnr": 71.74668988988765,
+    "max_abs": 0.017383038997650146,
+    "mean_abs": 0.0001786822103895247,
+    "max_rel": 244.140625,
+    "error_share_pct": {
+      ">0.004": 0.005412101745605469,
+      ">0.02": 0.0,
+      ">0.1": 0.0,
+      ">0.25": 0.0
+    }
+  },
+  "rescale": 32.0,
+  "safe_norms": 5,
+  "convert_seconds": 39.76063333300408
+}

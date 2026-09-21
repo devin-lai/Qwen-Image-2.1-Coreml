@@ -1,0 +1,9 @@
+# Inference and model downloads. Use Python 3.11–3.13 on Apple silicon.
+coremltools>=9.0
+torch>=2.4
+numpy>=1.26
+Pillow>=10.0
+huggingface_hub>=0.26
+
+# For new text prompts: python -m pip install '.[torch-reference]'
+# For the full test suite: python -m pip install -e '.[test,torch-reference]'

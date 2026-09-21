@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v5
+      - run: uv pip install --system ruff
+      - run: ruff check .
+
+  parity:
+    # The host-side math is ported from diffusers, so CI's job is to prove the
+    # ports still equal the originals. These tests need no Core ML runtime and
+    # no .mlpackage — only torch and diffusers — so they run on a plain runner.
+    name: host-side math vs diffusers (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: astral-sh/setup-uv@v5
+      - name: Install
+        run: |
+          uv pip install --system torch numpy Pillow pytest
+          uv pip install --system "diffusers @ git+https://github.com/huggingface/diffusers.git@80c7ed262aeffbeb43ef13ae04baeb9b84515a69" "transformers>=5.17,<6" accelerate
+      - run: python -m pytest tests/ -v
+      - run: python -m pip wheel --no-deps . --wheel-dir /tmp/qwen-wheel
+
+  imports:
+    # Check package imports on macOS. Model inference is tested locally.
+    name: import on macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v5
+      - run: uv pip install --system -e .
+      - run: python -c "import coremltools; import qwen_image_coreml; print(qwen_image_coreml.__version__)"
+      - run: python generate.py --help
+      - run: python benchmark.py --help

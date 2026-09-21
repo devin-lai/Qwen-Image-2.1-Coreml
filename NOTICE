@@ -1,0 +1,27 @@
+Core ML conversion of Qwen-Image-2.1
+Copyright 2026 Devin Lai <markauto75@gmail.com>
+
+This repository includes code adapted from Hugging Face Diffusers under the
+Apache License, Version 2.0:
+
+qwen_image_coreml/layout.py
+  QwenImage21Rope and QwenImage21TemporalTimesteps, from
+  diffusers/models/transformers/transformer_qwenimage21.py
+  Copyright 2026 Qwen-Image Team, The HuggingFace Team. All rights reserved.
+  Modified to build fixed-shape host inputs, pad prompts, and fold RoPE signs.
+
+qwen_image_coreml/scheduler.py
+  FlowMatchEulerDiscreteScheduler, from
+  diffusers/schedulers/scheduling_flow_match_euler_discrete.py
+  Copyright 2025 Stability AI, Katherine Crowson and The HuggingFace Team.
+  All rights reserved.
+  Modified to retain the configuration and Euler sampling path used here.
+
+Reference source revision:
+https://github.com/huggingface/diffusers/tree/80c7ed262aeffbeb43ef13ae04baeb9b84515a69
+
+The converted weights are derived from Qwen/Qwen-Image-2.1 and remain governed
+by the Qwen Research License Agreement, supplied as LICENSE-QWEN. The code's
+Apache License does not apply to those weights.
+
+Qwen is licensed under the Qwen RESEARCH LICENSE AGREEMENT, Copyright (c) 2026 Hangzhou Tongyi Laboratory Technology Co., Ltd. All Rights Reserved.

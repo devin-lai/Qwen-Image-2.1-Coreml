@@ -1,0 +1,845 @@
+{
+  "QwenImage21_Blocks_0of4.mlpackage": {
+    "size_gb": 3.558,
+    "specification_version": 9,
+    "default_function": "decode",
+    "functions": {
+      "decode": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              4096,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "temb",
+            "shape": [
+              1,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 1: the timestep embedding the final AdaLayerNorm reads"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "cache_k_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix keys for this chunk's layers, post-norm and post-RoPE"
+          },
+          {
+            "name": "cache_v_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix values for this chunk's layers"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              1,
+              4160
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1310",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      },
+      "prefix": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              64,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1283",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1285",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1287",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  },
+  "QwenImage21_Blocks_1of4.mlpackage": {
+    "size_gb": 3.49,
+    "specification_version": 9,
+    "default_function": "decode",
+    "functions": {
+      "decode": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "temb",
+            "shape": [
+              1,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 1: the timestep embedding the final AdaLayerNorm reads"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "cache_k_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix keys for this chunk's layers, post-norm and post-RoPE"
+          },
+          {
+            "name": "cache_v_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix values for this chunk's layers"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              1,
+              4160
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1306",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      },
+      "prefix": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              64,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1252",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1254",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1256",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  },
+  "QwenImage21_Blocks_2of4.mlpackage": {
+    "size_gb": 3.49,
+    "specification_version": 9,
+    "default_function": "decode",
+    "functions": {
+      "decode": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "temb",
+            "shape": [
+              1,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 1: the timestep embedding the final AdaLayerNorm reads"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "cache_k_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix keys for this chunk's layers, post-norm and post-RoPE"
+          },
+          {
+            "name": "cache_v_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix values for this chunk's layers"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              1,
+              4160
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1306",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      },
+      "prefix": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              64,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1252",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1254",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1256",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  },
+  "QwenImage21_Blocks_3of4.mlpackage": {
+    "size_gb": 3.524,
+    "specification_version": 9,
+    "default_function": "decode",
+    "functions": {
+      "decode": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              4096,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "temb",
+            "shape": [
+              1,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 1: the timestep embedding the final AdaLayerNorm reads"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              4096,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "cache_k_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix keys for this chunk's layers, post-norm and post-RoPE"
+          },
+          {
+            "name": "cache_v_1",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "prefix values for this chunk's layers"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              1,
+              4160
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1328",
+            "shape": [
+              1,
+              4096,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      },
+      "prefix": {
+        "inputs": [
+          {
+            "name": "hidden_states_1",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": "target-image latents (decode, first chunk) or hidden states (later chunks)"
+          },
+          {
+            "name": "modulation",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": "Embed output 2: per-block scales and gates, from the sampled t (decode) or t=0 (prefix)"
+          },
+          {
+            "name": "cos",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "real part of the 3-axis RoPE table for this function's token range"
+          },
+          {
+            "name": "sin",
+            "shape": [
+              64,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": "imaginary part of the same table, with the rotation's pair-swap sign folded in (qwen_layout.fold_rope_sign) \u2014 feeding the raw imaginary part instead rotates every query and key the wrong way"
+          },
+          {
+            "name": "bias",
+            "shape": [
+              1,
+              1,
+              64,
+              64
+            ],
+            "dtype": "FLOAT16",
+            "means": "additive attention mask: 0 where attendable, -1e4 at padded prompt positions"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "var_1252",
+            "shape": [
+              1,
+              64,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1254",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_1256",
+            "shape": [
+              8,
+              1,
+              64,
+              32,
+              128
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  },
+  "QwenImage21_Embed.mlpackage": {
+    "size_gb": 0.17,
+    "specification_version": 9,
+    "default_function": "main",
+    "functions": {
+      "main": {
+        "inputs": [
+          {
+            "name": "timesteps_proj",
+            "shape": [
+              1,
+              256
+            ],
+            "dtype": "FLOAT16",
+            "means": "time_proj(timestep/1000) \u2014 the sinusoidal projection, computed on the host in fp32"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "input_5",
+            "shape": [
+              1,
+              4096
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          },
+          {
+            "name": "var_16",
+            "shape": [
+              1,
+              16384
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  },
+  "QwenImage21_VAEDecoder_1024x1024.mlpackage": {
+    "size_gb": 0.507,
+    "specification_version": 8,
+    "default_function": "main",
+    "functions": {
+      "main": {
+        "inputs": [
+          {
+            "name": "latents",
+            "shape": [
+              1,
+              64,
+              64,
+              64
+            ],
+            "dtype": "FLOAT32",
+            "means": "denoiser output, unpacked to (1, 64, h, w); the VAE stage applies latents*std+mean itself"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "add_59",
+            "shape": [
+              1,
+              4,
+              1024,
+              1024
+            ],
+            "dtype": "FLOAT16",
+            "means": ""
+          }
+        ]
+      }
+    }
+  }
+}

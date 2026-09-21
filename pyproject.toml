@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=77.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwen-image-coreml"
+version = "0.1.0"
+description = "Core ML inference for Qwen-Image-2.1 on Apple silicon."
+authors = [{name = "Devin Lai", email = "markauto75@gmail.com"}]
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "LICENSE-QWEN"]
+requires-python = ">=3.11,<3.14"
+keywords = [
+    "coreml", "core-ml", "mlpackage", "apple-silicon", "on-device",
+    "text-to-image", "diffusion", "qwen", "qwen-image", "fp16", "macos",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    # Runtime version used to validate these packages.
+    "coremltools>=9.0",
+    "torch>=2.4",
+    "numpy>=1.26",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# download_models.py only.
+hub = ["huggingface_hub>=0.26"]
+# encode_prompt.py (text -> embeddings) and the parity tests, which check the
+# vendored host-side math against diffusers' originals.
+torch-reference = [
+    "diffusers @ git+https://github.com/huggingface/diffusers.git@80c7ed262aeffbeb43ef13ae04baeb9b84515a69",
+    "transformers>=5.17,<6",
+    "accelerate",
+]
+test = ["pytest"]
+
+[project.urls]
+Repository = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml"
+Issues = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml/issues"
+
+[tool.setuptools.packages.find]
+include = ["qwen_image_coreml*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--tb=short", "-ra"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP", "SIM", "C4", "PERF", "RET", "RUF", "PT"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qwen_image_coreml"]

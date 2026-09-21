@@ -1,0 +1,35 @@
+# The converted models are 14.7 GB and live on the Hugging Face Hub instead:
+#   python download_models.py
+/Qwen-Image-2.1-Coreml/
+models/
+*.mlpackage/
+*.mlmodelc/
+
+# Prompt KV caches (67 MB each), written on the first run with a given prompt.
+.cache/
+
+# Generated images and latents land wherever --out says; these are the defaults.
+output.png
+*_latents.npz
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# macOS
+.DS_Store
+
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local credentials
+.env
+.env.*
+!.env.example
