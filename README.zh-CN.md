@@ -36,6 +36,7 @@ python generate.py --out neon.png
 ```
 
 模型下载到 `models/`。默认使用仓库内的霓虹招牌提示词嵌入。
+CLI 和 Python API 默认启用 `cpu_and_gpu`；也可在生成命令中显式添加 `--compute-units cpu_and_gpu`。
 首次运行还需编译、加载模型，并计算提示词 KV 缓存，因此比后续运行更慢。
 
 生成中文招牌示例：

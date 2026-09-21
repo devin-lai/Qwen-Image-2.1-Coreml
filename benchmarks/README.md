@@ -35,6 +35,7 @@ calculated from the saved measurements.
 | Published metric | Calculation and source |
 | --- | --- |
 | 2.4–2.6× faster median denoising steps | 14.254 s in [the PyTorch baseline](pytorch_denoise_timing.json), divided by 5.434 s and 5.949 s in [Core ML session 1](pipeline_timing_session1.json) and [session 2](pipeline_timing_session2.json), gives 2.62× and 2.40×. |
+| 7.0× faster than CPU + ANE on the same two-block graph | In [the optimization study](optimization_study.json), `ne.measurements["2"].median_ms` / `sdpa18.measurements["2"].median_ms` = 2,201.539 / 313.939 = 7.01×. Both use the iOS 18 FP16 recipe with folded RoPE; only the allowed compute units differ (`cpu_and_ne` vs `cpu_and_gpu`). This is a two-block result, not a measured full-pipeline speedup. |
 | 221–250 s for 40 denoising steps | The two Core ML `denoise_total` values are 221.213 s and 249.667 s, or 3.69 and 4.16 minutes. |
 | 1.91 s VAE prediction | The warmed median is 1908.002 ms in [the resident-model benchmark](step_latency_resident.json). Model loading is excluded. |
 | 15.8 dB higher noise-prediction PSNR | 71.554 dB in [Core ML precision](precision_step_coreml.json) minus 55.797 dB for bf16 in [PyTorch precision](precision_step_torch.json). Both compare the same one-step output with an fp32 CPU reference at `t = 1.0`. |

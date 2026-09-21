@@ -1,13 +1,25 @@
-# Core ML conversion of Qwen-Image-2.1 for Apple silicon
+# Qwen-Image-2.1 for Mac with Core ML GPU acceleration
 
-**Generate 1024 × 1024 AI images locally on your Mac.**
+**Generate 1024 × 1024 images locally. Get 2.4–2.6× faster denoising than PyTorch MPS.**
 
 [![CI](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/actions/workflows/ci.yml/badge.svg)](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/actions/workflows/ci.yml)
 [![Models on Hugging Face](https://img.shields.io/badge/Hugging_Face-Download_models-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-111827?logo=apple)](#quickstart)
 [![Python 3.11–3.13](https://img.shields.io/badge/Python-3.11–3.13-3776AB?logo=python&logoColor=white)](#quickstart)
 
-[Quickstart](#quickstart) · [Models](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml) · [Benchmarks](#performance-on-apple-silicon) · [Python API](#python-api) · [FAQ](#faq) · [简体中文](README.zh-CN.md)
+**[Generate your first image →](#quickstart) · [Download models](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml) · [Explore the benchmarks](#performance-on-apple-silicon)**
+
+| **2.4–2.6× faster** | **7.0× faster** | **3.7–4.2 minutes** |
+| :---: | :---: | :---: |
+| Median denoising step vs PyTorch bf16/MPS | Same two-block graph vs Core ML CPU + ANE | 40 denoising steps at 1024 × 1024 |
+
+Measured on an **M5 MacBook Pro, 32 GB unified memory**, with Core ML FP16 and
+**`cpu_and_gpu`**, the default. The CPU + ANE comparison covers two transformer
+blocks; the full GPU generation records cover all 32. Denoising timings exclude
+text encoding, model loading, and prompt prefix computation.
+[Measurement details](#performance-on-apple-silicon) · [Raw data and calculations](benchmarks/README.md#performance-summary)
+
+[Python API](#python-api) · [FAQ](#faq) · [简体中文](README.zh-CN.md)
 
 Run [Qwen-Image-2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) text-to-image
 inference on Apple silicon with **Core ML**, preconverted **FP16 models**, and a
@@ -15,10 +27,6 @@ Python CLI. Four included prompt embeddings let you generate your first image
 without setting up the text encoder. After downloading the packages and
 installing dependencies, generation with saved embeddings runs locally without
 a cloud inference API.
-
-**Measured 2.4–2.6× faster median denoising steps than PyTorch bf16/MPS** on an
-M5 MacBook Pro with 32 GB unified memory. This compares denoising steps, not
-end-to-end generation; [see the environment, timings, and raw records](#performance-on-apple-silicon).
 
 | English lettering | Chinese lettering | Wildlife | Illustration |
 | :---: | :---: | :---: | :---: |
@@ -63,6 +71,9 @@ python generate.py --out neon.png
 `download_models.py` downloads the six packages into `models/`. Generation uses the
 included neon-sign prompt. The first run also compiles models and computes the
 prompt's KV cache, so it takes longer than subsequent runs.
+
+**GPU acceleration is on by default.** The CLI and Python API use `cpu_and_gpu`.
+To select it explicitly, add `--compute-units cpu_and_gpu` to the generation command.
 
 <details>
 <summary>Already downloaded the models?</summary>
@@ -120,7 +131,7 @@ python generate.py --prompt-embeds assets/prompts/botanical.npz --out botanical.
 complete 40 denoising steps at 1024 × 1024 in **3.7–4.2 minutes**, with the VAE
 adding about 1.9 seconds of warmed prediction time.
 
-| Metric | Core ML fp16 | Reference or context |
+| Metric | Core ML fp16 (`cpu_and_gpu`) | Reference or context |
 | --- | ---: | --- |
 | Median denoising step | **5.43–5.95 s** | PyTorch bf16 on MPS: 14.25 s; **2.4–2.6× speedup** |
 | 40 denoising steps | **221–250 s** | 1024 × 1024, seed 42; denoising only |
@@ -140,6 +151,23 @@ with fp32. The **full six-package download is 14.74 GB**, including the timestep
 embedding and VAE decoder.
 
 [Benchmark records and calculation details](benchmarks/README.md#performance-summary)
+
+### GPU vs Neural Engine
+
+The optimization study compared the **same two-block FP16 graph** with fused
+attention, 4,096 image tokens, and the same input layout:
+
+| Core ML compute setting | Median time for two blocks | Relative speed |
+| --- | ---: | ---: |
+| **`cpu_and_gpu` (default)** | **313.94 ms** | **7.01×** |
+| `cpu_and_ne` (CPU + Neural Engine) | 2,201.54 ms | 1.00× |
+
+Source: the `sdpa18` and `ne` two-block measurements in
+[the raw optimization study](benchmarks/optimization_study.json).
+`cpu_and_ne` allows CPU execution as well as the ANE; the study does not record
+per-operation device placement. Full-model ANE timings in the study are
+projections from this smaller graph. A full-pipeline GPU/ANE comparison has not
+been measured. Results on other chips need benchmarking.
 
 ## Python API
 
@@ -270,9 +298,10 @@ see [Your own prompts](#your-own-prompts).
 
 **Does it use the Apple Neural Engine?**
 
-The default is `cpu_and_gpu`. Neural Engine execution was explored in the
-[optimization study](benchmarks/optimization_study.txt); GPU execution was
-faster in the recorded tests. The headline timings use the GPU setting.
+The default is `cpu_and_gpu`, which enables the CPU and GPU. The recorded
+[two-block comparison](#gpu-vs-neural-engine) was **7.0× faster** with this setting
+than with `cpu_and_ne` (CPU + Neural Engine). The full-generation timings use
+`cpu_and_gpu`.
 
 **Can I use it from Swift or on iPhone?**
 
