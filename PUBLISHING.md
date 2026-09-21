@@ -30,6 +30,48 @@ python verify.py --models ./Qwen-Image-2.1-Coreml --steps 4
 Keep weights, compiled models, credentials, prompt KV caches, and generated
 outputs out of this repository. The samples under `assets/` are intentional.
 
+### Discovery and sharing
+
+Keep the GitHub About section aligned with the README and the measured release:
+
+- Description: `Run Qwen-Image-2.1 locally on Apple silicon Macs with Core ML. 1024x1024 text-to-image, FP16 models and Python inference. Measured 2.4-2.6x faster denoising steps vs PyTorch bf16/MPS on M5 (32 GB). Preconverted weights on Hugging Face.`
+- Website: `https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml`
+- Topics: `qwen`, `qwen-image`, `qwen-image-2-1`, `coreml`, `core-ml`,
+  `coremltools`, `apple-silicon`, `macos`, `text-to-image`, `image-generation`,
+  `generative-ai`, `diffusion-models`, `on-device-ai`, `local-ai`,
+  `model-conversion`, `python`.
+
+[GitHub topics](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics)
+help people discover related projects. Use topics for capabilities this release
+actually provides; revise them when supported platforms or features change.
+
+The social preview is [`assets/social-preview.png`](assets/social-preview.png),
+with editable source in [`assets/social-preview.svg`](assets/social-preview.svg).
+It is 1280 × 640 and under 1 MB. Upload the PNG under repository **Settings →
+General → Social preview**; committing the image alone does not set the preview.
+GitHub documents this setting in its
+[social preview guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/customizing-your-repositorys-social-media-preview).
+With librsvg installed, regenerate the PNG after changing the SVG:
+
+```bash
+rsvg-convert assets/social-preview.svg -o assets/social-preview.png
+```
+
+Keep the benchmark hardware, baseline precision, and denoising-only qualifier
+in descriptions and preview images. The release does not establish an
+end-to-end speedup or performance on other Macs. Update the English README,
+Chinese quickstart, and preview together when those claims change.
+
+For a project announcement, start with a real gallery output and this factual
+summary, adjusting it for the community where it will be shared:
+
+> Run Qwen-Image-2.1 locally on Apple silicon with Core ML. Includes preconverted
+> FP16 models, a Python CLI, four reproducible sample prompts, and raw benchmark
+> records. On an M5 MacBook Pro with 32 GB, median denoising steps were 2.4–2.6×
+> faster than PyTorch bf16/MPS. Looking for hardware reports from other Macs.
+> Code: Apache-2.0; weights: Qwen Research License, non-commercial research and
+> evaluation. https://github.com/devin-lai/Qwen-Image-2.1-Coreml
+
 ## Hugging Face
 
 Git LFS stores `*.bin` and `*.mlmodel`. The package manifests and documentation

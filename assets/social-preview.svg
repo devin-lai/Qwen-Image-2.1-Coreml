@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Core ML conversion of Qwen-Image-2.1 for Apple silicon</title>
+  <desc id="desc">Local 1024 by 1024 text-to-image generation. Measured 2.4 to 2.6 times faster median denoising steps than PyTorch bf16 on MPS on an M5 MacBook Pro with 32 GB. Denoising only; excludes loading and text encoding.</desc>
+  <rect width="1280" height="640" fill="#101619"/>
+  <rect x="0" y="0" width="10" height="640" fill="#c6f36b"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="64" y="68" fill="#c6f36b" font-size="18" font-weight="700" letter-spacing="2">DEVIN LAI / COMMUNITY CONVERSION</text>
+    <text x="60" y="159" fill="#f6f8f5" font-size="72" font-weight="700" letter-spacing="-2">Qwen-Image-2.1</text>
+    <text x="64" y="211" fill="#c6f36b" font-size="32">Core ML conversion for Apple silicon</text>
+    <text x="64" y="264" fill="#b9c5c8" font-size="24">Local text-to-image. 1024 × 1024. Preconverted FP16 models.</text>
+    <path d="M64 308 H1216" stroke="#344248" stroke-width="1"/>
+    <text x="60" y="412" fill="#c6f36b" font-size="92" font-weight="700" letter-spacing="-3">2.4–2.6×</text>
+    <text x="520" y="368" fill="#f6f8f5" font-size="30" font-weight="700">faster median denoising steps</text>
+    <text x="520" y="411" fill="#b9c5c8" font-size="26">vs PyTorch bf16 / MPS</text>
+    <text x="64" y="466" fill="#b9c5c8" font-size="21">Measured on M5 MacBook Pro · 32 GB · macOS 27.0 · Core ML CPU + GPU</text>
+    <text x="64" y="500" fill="#b9c5c8" font-size="21">Denoising only. Excludes model loading and text encoding. Raw records in repo.</text>
+    <path d="M64 538 H1216" stroke="#344248" stroke-width="1"/>
+    <text x="64" y="587" fill="#f6f8f5" font-size="22">github.com/devin-lai/Qwen-Image-2.1-Coreml</text>
+    <text x="1216" y="587" fill="#c6f36b" font-size="19" text-anchor="end">CODE + MODELS + BENCHMARKS</text>
+  </g>
+</svg>

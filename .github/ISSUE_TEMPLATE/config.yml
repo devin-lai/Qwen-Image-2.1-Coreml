@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Quickstart and FAQ
+    url: https://github.com/devin-lai/Qwen-Image-2.1-Coreml#quickstart
+    about: Installation, supported hardware, custom prompts, and common questions.
+  - name: Download Core ML models
+    url: https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml
+    about: Preconverted FP16 packages and the model license on Hugging Face.

@@ -1,4 +1,118 @@
-# Core ML conversion of Qwen-Image-2.1
+# Core ML conversion of Qwen-Image-2.1 for Apple silicon
+
+**Generate 1024 × 1024 AI images locally on your Mac.**
+
+[![CI](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/actions/workflows/ci.yml/badge.svg)](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/actions/workflows/ci.yml)
+[![Models on Hugging Face](https://img.shields.io/badge/Hugging_Face-Download_models-FFD21E?logo=huggingface&logoColor=000)](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml)
+[![macOS 15+](https://img.shields.io/badge/macOS-15%2B-111827?logo=apple)](#quickstart)
+[![Python 3.11–3.13](https://img.shields.io/badge/Python-3.11–3.13-3776AB?logo=python&logoColor=white)](#quickstart)
+
+[Quickstart](#quickstart) · [Models](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml) · [Benchmarks](#performance-on-apple-silicon) · [Python API](#python-api) · [FAQ](#faq) · [简体中文](README.zh-CN.md)
+
+Run [Qwen-Image-2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) text-to-image
+inference on Apple silicon with **Core ML**, preconverted **FP16 models**, and a
+Python CLI. Four included prompt embeddings let you generate your first image
+without setting up the text encoder. After downloading the packages and
+installing dependencies, generation with saved embeddings runs locally without
+a cloud inference API.
+
+**Measured 2.4–2.6× faster median denoising steps than PyTorch bf16/MPS** on an
+M5 MacBook Pro with 32 GB unified memory. This compares denoising steps, not
+end-to-end generation; [see the environment, timings, and raw records](#performance-on-apple-silicon).
+
+| English lettering | Chinese lettering | Wildlife | Illustration |
+| :---: | :---: | :---: | :---: |
+| [![Neon sign reading QWEN IMAGE 2.1 on a rainy street, generated with Core ML](assets/gallery/neon_sign.jpg)](assets/gallery/neon_sign.jpg) | [![Wooden tea-house sign reading 清风茶舍, generated with Core ML](assets/gallery/tea_house.jpg)](assets/gallery/tea_house.jpg) | [![Red fox in snow at dawn, generated with Core ML](assets/gallery/fox.jpg)](assets/gallery/fox.jpg) | [![Botanical ink illustration of a monstera leaf, generated with Core ML](assets/gallery/botanical.jpg)](assets/gallery/botanical.jpg) |
+
+*Actual Core ML outputs: 1024 × 1024, 40 steps, seed 42. Click an image to see it
+at full size. [Prompts and reproduction commands](#examples).*
+
+- **Download and run:** six Core ML packages, a CLI, and a Python API.
+- **Reuse prompt work:** cached prompt KV tensors across runs; shared transformer
+  weights for prefix and decode functions.
+- **Inspect the evidence:** raw benchmark JSON, reference latents, and host-side
+  tests are included.
+
+Community conversion and inference code by Devin Lai; built on Qwen's model.
+[Code: Apache-2.0](LICENSE) · [Weights: Qwen Research License](LICENSE-QWEN).
+The weights are for non-commercial research and evaluation; see [license details](#license-and-attribution).
+
+## Quickstart
+
+| Requirement | Details |
+| --- | --- |
+| Mac | Apple silicon, macOS 15 or newer |
+| Python | 3.11–3.13; commands below use Python 3.11 |
+| Storage | 14.74 GB of model packages, plus dependencies and compilation space |
+| Tested hardware | M5 MacBook Pro, 32 GB unified memory |
+
+Memory requirements on smaller machines have not been established.
+Use one of the included prompts for your first run:
+
+```bash
+git clone https://github.com/devin-lai/Qwen-Image-2.1-Coreml.git
+cd Qwen-Image-2.1-Coreml
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+python download_models.py
+python generate.py --out neon.png
+```
+
+`download_models.py` downloads the six packages into `models/`. Generation uses the
+included neon-sign prompt. The first run also compiles models and computes the
+prompt's KV cache, so it takes longer than subsequent runs.
+
+<details>
+<summary>Already downloaded the models?</summary>
+
+Point `--models` at the directory containing the six `.mlpackage` folders.
+For the nested Hugging Face checkout:
+
+```bash
+python generate.py --models ./Qwen-Image-2.1-Coreml --out neon.png
+```
+
+</details>
+
+## Your own prompts
+
+Install the optional text-encoding dependencies, then encode a prompt once:
+
+```bash
+python -m pip install '.[torch-reference]'
+python encode_prompt.py "a lighthouse in a storm, long exposure" --name lighthouse
+python generate.py --prompt-embeds assets/prompts/lighthouse.npz --out lighthouse.png
+```
+
+`encode_prompt.py` loads the upstream Qwen3-VL text encoder through Diffusers.
+This requires a separate download and more memory than using the included
+embeddings. The optional dependencies pin the Diffusers revision used for this
+release. You can provide a local checkpoint with `--checkpoint` or the
+`QWEN_IMAGE_21_CHECKPOINT` environment variable.
+
+The generation script saves prompt KV tensors under `.cache/` and reuses them
+when the prompt, layout, model files, and compute settings match. Use
+`--prefix-cache none` to recompute them. Each cache takes about 67 MB.
+
+## Examples
+
+The gallery above uses 1024 × 1024, 40 steps, seed 42, and `cpu_and_gpu`.
+All four prompt embeddings are included in `assets/prompts/`.
+
+| Embedding | Prompt |
+| --- | --- |
+| [`neon_sign.npz`](assets/prompts/neon_sign.npz) | A neon shop sign that reads "QWEN IMAGE 2.1", rainy night, reflections on wet pavement |
+| [`tea_house.npz`](assets/prompts/tea_house.npz) | 一块木质招牌上写着「清风茶舍」，暖黄灯笼，雨后的青石板街 |
+| [`fox.npz`](assets/prompts/fox.npz) | A red fox standing in fresh snow at dawn, soft morning light |
+| [`botanical.npz`](assets/prompts/botanical.npz) | A hand-drawn botanical illustration of a monstera leaf, ink on aged paper |
+
+```bash
+python generate.py --prompt-embeds assets/prompts/tea_house.npz --out tea.png
+python generate.py --prompt-embeds assets/prompts/fox.npz --out fox.png
+python generate.py --prompt-embeds assets/prompts/botanical.npz --out botanical.png
+```
 
 ## Performance on Apple silicon
 
@@ -26,86 +140,6 @@ with fp32. The **full six-package download is 14.74 GB**, including the timestep
 embedding and VAE decoder.
 
 [Benchmark records and calculation details](benchmarks/README.md#performance-summary)
-
-Run [Qwen-Image-2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) text-to-image
-generation on Apple silicon. This repository contains the Python inference code,
-sample prompts, reference outputs, and benchmark records. The converted models
-are hosted on [Hugging Face](https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml).
-
-The release uses fp16 Core ML packages for the denoiser and VAE decoder. It
-supports 1024 × 1024 images and prompts of up to 64 encoded tokens. The text
-encoder is separate; four precomputed prompts are included so you can try the
-models without downloading the original checkpoint.
-
-Conversion and inference code by Devin Lai. Built with Qwen.
-
-![A neon shop sign reading QWEN IMAGE 2.1 on a rainy street](assets/gallery/neon_sign.jpg)
-
-*A neon shop sign that reads "QWEN IMAGE 2.1", rainy night, reflections on wet
-pavement. 1024 × 1024, 40 steps, seed 42.*
-
-## Quickstart
-
-You need an Apple silicon Mac running macOS 15 or newer and Python 3.11–3.13.
-The packages take 14.74 GB on disk; allow additional space for dependencies and
-Core ML compilation. Testing was done on an M5 MacBook Pro with 32 GB of unified
-memory. Memory requirements on smaller machines have not been established.
-
-```bash
-git clone https://github.com/devin-lai/Qwen-Image-2.1-Coreml.git
-cd Qwen-Image-2.1-Coreml
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-
-python download_models.py
-python generate.py --out neon.png
-```
-
-The first command downloads the six packages into `models/`. Generation uses the
-included neon-sign prompt. The first run also compiles models and computes the
-prompt's KV cache, so it takes longer than subsequent runs.
-
-To use the nested Hugging Face checkout instead of downloading another copy:
-
-```bash
-python generate.py --models ./Qwen-Image-2.1-Coreml --out neon.png
-```
-
-## Your own prompts
-
-Install the optional text-encoding dependencies, then encode a prompt once:
-
-```bash
-python -m pip install '.[torch-reference]'
-python encode_prompt.py "a lighthouse in a storm, long exposure" --name lighthouse
-python generate.py --prompt-embeds assets/prompts/lighthouse.npz --out lighthouse.png
-```
-
-`encode_prompt.py` loads the upstream Qwen3-VL text encoder through Diffusers.
-This requires a separate download and more memory than using the included
-embeddings. The optional dependencies pin the Diffusers revision used for this
-release. You can provide a local checkpoint with `--checkpoint` or the
-`QWEN_IMAGE_21_CHECKPOINT` environment variable.
-
-The generation script saves prompt KV tensors under `.cache/` and reuses them
-when the prompt, layout, model files, and compute settings match. Use
-`--prefix-cache none` to recompute them. Each cache takes about 67 MB.
-
-## Examples
-
-These samples use the same settings: 1024 × 1024, 40 steps, seed 42, and
-`cpu_and_gpu`. The corresponding embeddings are in `assets/prompts/`.
-
-| Sample | Prompt |
-| --- | --- |
-| ![Red fox in snow](assets/gallery/fox.jpg) | A red fox standing in fresh snow at dawn, soft morning light |
-| ![Wooden tea-house sign](assets/gallery/tea_house.jpg) | 一块木质招牌上写着「清风茶舍」，暖黄灯笼，雨后的青石板街 |
-| ![Botanical illustration](assets/gallery/botanical.jpg) | A hand-drawn botanical illustration of a monstera leaf, ink on aged paper |
-
-```bash
-python generate.py --prompt-embeds assets/prompts/tea_house.npz --out tea.png
-```
 
 ## Python API
 
@@ -219,6 +253,52 @@ python -m pytest tests/ -v
 The tests cover the rotary tables, timestep projection, sampler, cache reuse,
 and download handling. They do not need model weights. CI also checks lint and
 package imports; it does not run model inference.
+
+## FAQ
+
+**Does this run on M1, M2, M3, or M4 Macs?**
+
+The packages target Apple silicon and macOS 15+, but the published measurements
+are from an M5 MacBook Pro with 32 GB. Other chips and memory sizes need testing.
+If you try one, [share a hardware report](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/issues/new?template=benchmark_report.yml).
+
+**Can I run it offline?**
+
+Yes, with the models, dependencies, and prompt embeddings already downloaded.
+Encoding new text prompts also needs the separate upstream text encoder;
+see [Your own prompts](#your-own-prompts).
+
+**Does it use the Apple Neural Engine?**
+
+The default is `cpu_and_gpu`. Neural Engine execution was explored in the
+[optimization study](benchmarks/optimization_study.txt); GPU execution was
+faster in the recorded tests. The headline timings use the GPU setting.
+
+**Can I use it from Swift or on iPhone?**
+
+This repository supplies Python inference code and Core ML packages. It does
+not include a Swift app, and iOS execution has not been tested. A native client
+would need to implement the host-side pipeline around the packages.
+
+**Why is the first run slower?**
+
+Core ML compiles and loads the packages, and the pipeline computes the prompt
+KV cache. Later runs can reuse the compiled models and prompt cache. The
+published denoising times exclude loading and text encoding.
+
+## Contribute and share your results
+
+Running on a different Mac? [Submit a hardware benchmark](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/issues/new?template=benchmark_report.yml)
+with your chip, memory, macOS version, and raw timings. Reports from M1–M4 Macs
+and smaller memory configurations help establish real compatibility.
+
+Found a problem? [Report a bug](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/issues/new?template=bug_report.yml).
+For code changes, documentation improvements, and reproducible examples, start
+with [CONTRIBUTING.md](CONTRIBUTING.md).
+
+If this project is useful, **star the repository** to bookmark it and share the
+link with someone exploring local AI image generation on Mac. When sharing an
+output, include its prompt, seed, steps, and hardware so others can reproduce it.
 
 ## Scope and limitations
 

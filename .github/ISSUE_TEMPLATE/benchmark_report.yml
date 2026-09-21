@@ -1,0 +1,53 @@
+name: Hardware benchmark / compatibility report
+description: Help document speed and compatibility across Apple silicon Macs.
+title: "[Hardware] Chip / memory / macOS"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Successful runs and failures are both useful. See [benchmark instructions](https://github.com/devin-lai/Qwen-Image-2.1-Coreml/blob/main/CONTRIBUTING.md#share-a-hardware-benchmark).
+        Remove credentials and private paths from logs before sharing.
+  - type: input
+    id: hardware
+    attributes:
+      label: Mac model, chip, and unified memory
+      placeholder: MacBook Pro, M5, 32 GB
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Software and model versions
+      description: Include macOS, Python, coremltools, PyTorch, repository commit, and model revision (if known).
+    validations:
+      required: true
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: Result
+      options:
+        - Image generated successfully
+        - Run failed or ran out of memory
+        - Benchmark only
+    validations:
+      required: true
+  - type: textarea
+    id: commands
+    attributes:
+      label: Exact commands and settings
+      description: Include prompt, seed, steps, compute units, and whether the prefix cache was reused.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Raw timings or error output
+      description: Paste or attach timings.json and benchmarks/bench_local.json, or include the failure log. Distinguish denoising time from total wall time.
+    validations:
+      required: true
+  - type: textarea
+    id: conditions
+    attributes:
+      label: Run conditions and sample output
+      description: Note power mode, other workloads, memory pressure or swap, and whether this was the first run. Optionally attach the generated image.

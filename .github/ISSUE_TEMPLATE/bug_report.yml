@@ -1,0 +1,36 @@
+name: Bug report
+description: Report an installation, model download, or generation problem.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check the [FAQ](https://github.com/devin-lai/Qwen-Image-2.1-Coreml#faq) and existing issues first.
+        Remove credentials and private paths from logs before sharing.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Mac model, chip, memory, macOS, Python, coremltools, PyTorch, repository commit, and model revision (if known).
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the exact command, prompt or embedding file, and any non-default settings.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output or screenshots
+      description: Include the complete relevant traceback or attach an image of the problem.

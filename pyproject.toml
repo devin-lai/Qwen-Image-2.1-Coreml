@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "qwen-image-coreml"
 version = "0.1.0"
-description = "Core ML inference for Qwen-Image-2.1 on Apple silicon."
+description = "Local text-to-image generation with Qwen-Image-2.1 and Core ML on Apple silicon Macs."
 authors = [{name = "Devin Lai", email = "markauto75@gmail.com"}]
 readme = "README.md"
 license = "Apache-2.0"
@@ -13,7 +13,8 @@ license-files = ["LICENSE", "NOTICE", "LICENSE-QWEN"]
 requires-python = ">=3.11,<3.14"
 keywords = [
     "coreml", "core-ml", "mlpackage", "apple-silicon", "on-device",
-    "text-to-image", "diffusion", "qwen", "qwen-image", "fp16", "macos",
+    "text-to-image", "image-generation", "diffusion", "qwen", "qwen-image",
+    "qwen-image-2-1", "fp16", "macos", "local-ai", "coremltools",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -47,6 +48,9 @@ test = ["pytest"]
 [project.urls]
 Repository = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml"
 Issues = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml/issues"
+Models = "https://huggingface.co/devin-lai/Qwen-Image-2.1-Coreml"
+Documentation = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml#quickstart"
+Benchmarks = "https://github.com/devin-lai/Qwen-Image-2.1-Coreml/tree/main/benchmarks"
 
 [tool.setuptools.packages.find]
 include = ["qwen_image_coreml*"]
