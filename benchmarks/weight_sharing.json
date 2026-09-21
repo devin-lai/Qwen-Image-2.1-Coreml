@@ -1,0 +1,90 @@
+{
+  "chunk0": {
+    "separate_gb": 7.047345892,
+    "merged_gb": 3.557641944,
+    "weight_sharing_pct": 49.51798877874632,
+    "decode_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "temb",
+      "cos",
+      "sin",
+      "cache_k_1",
+      "cache_v_1",
+      "bias"
+    ],
+    "prefix_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "cos",
+      "sin",
+      "bias"
+    ]
+  },
+  "chunk1": {
+    "separate_gb": 6.979701162,
+    "merged_gb": 3.48999721,
+    "weight_sharing_pct": 49.997899208052075,
+    "decode_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "temb",
+      "cos",
+      "sin",
+      "cache_k_1",
+      "cache_v_1",
+      "bias"
+    ],
+    "prefix_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "cos",
+      "sin",
+      "bias"
+    ]
+  },
+  "chunk2": {
+    "separate_gb": 6.979701162,
+    "merged_gb": 3.48999721,
+    "weight_sharing_pct": 49.997899208052075,
+    "decode_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "temb",
+      "cos",
+      "sin",
+      "cache_k_1",
+      "cache_v_1",
+      "bias"
+    ],
+    "prefix_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "cos",
+      "sin",
+      "bias"
+    ]
+  },
+  "chunk3": {
+    "separate_gb": 7.013782291,
+    "merged_gb": 3.524078339,
+    "weight_sharing_pct": 49.75495114066979,
+    "decode_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "temb",
+      "cos",
+      "sin",
+      "cache_k_1",
+      "cache_v_1",
+      "bias"
+    ],
+    "prefix_inputs": [
+      "hidden_states_1",
+      "modulation",
+      "cos",
+      "sin",
+      "bias"
+    ]
+  }
+}

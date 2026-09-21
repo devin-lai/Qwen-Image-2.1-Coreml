@@ -1,5 +1,32 @@
 # Core ML conversion of Qwen-Image-2.1
 
+## Performance on Apple silicon
+
+**2.4–2.6× faster denoising steps than PyTorch MPS.** The recorded Core ML runs
+complete 40 denoising steps at 1024 × 1024 in **3.7–4.2 minutes**, with the VAE
+adding about 1.9 seconds of warmed prediction time.
+
+| Metric | Core ML fp16 | Reference or context |
+| --- | ---: | --- |
+| Median denoising step | **5.43–5.95 s** | PyTorch bf16 on MPS: 14.25 s; **2.4–2.6× speedup** |
+| 40 denoising steps | **221–250 s** | 1024 × 1024, seed 42; denoising only |
+| VAE prediction | **1.91 s** | 1024 × 1024 RGBA, GPU, warmed model |
+| Noise-prediction PSNR vs fp32 | **71.55 dB** | PyTorch bf16: 55.80 dB; **15.8 dB higher**, about **6.1× lower RMS error** |
+| Transformer package size | **14.06 GB** | Separate prefix/decode packages: 28.02 GB; **50% smaller** through shared weights |
+
+Measured on an **M5 MacBook Pro with 32 GB unified memory**, macOS 27.0,
+coremltools 9.0, and PyTorch 2.11. The prompt has 31 tokens, padded to 64;
+Core ML uses `cpu_and_gpu`.
+
+Timings come from separate sessions on the same Mac and vary with system load.
+They exclude text encoding and model loading. The prompt prefix adds 28–33 s
+when it needs to be computed, then can be reused from cache. The precision
+comparison is one denoising step at `t = 1.0`; it measures numerical agreement
+with fp32. The **full six-package download is 14.74 GB**, including the timestep
+embedding and VAE decoder.
+
+[Benchmark records and calculation details](benchmarks/README.md#performance-summary)
+
 Run [Qwen-Image-2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) text-to-image
 generation on Apple silicon. This repository contains the Python inference code,
 sample prompts, reference outputs, and benchmark records. The converted models

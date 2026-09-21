@@ -1,0 +1,9 @@
+{
+  "device": "mps",
+  "dtype": "bfloat16",
+  "steps": 40,
+  "kv_cache": true,
+  "step_median_s": 14.254027771006804,
+  "step_first_s": 21.866335042053834,
+  "total_s": 577.6251445821254
+}
